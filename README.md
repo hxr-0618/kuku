@@ -7,18 +7,27 @@
 ## 应用场景
 1. **社交媒体监测**
 2. **危机预警**
+# 传统情感分析 vs 大模型情感分析代码对比
+from textblob import TextBlob
 from transformers import pipeline
 
-# 加载预训练情感分析模型（基于RoBERTa）
-sentiment_analyzer = pipeline("text-classification", model="nlptown/bert-base-multilingual-uncased-sentiment")
+# 传统方法
+def traditional_sentiment(text):
+    analysis = TextBlob(text)
+    return analysis.sentiment.polarity
 
-# 输入文本（支持多语言，如中文、英文混合）
-text = "这款手机的摄像头效果太棒了！不过充电速度有点慢，希望下一代改进～"
+# 大模型方法
+model = pipeline("sentiment-analysis", model="distilbert-base-uncased")
+def llm_sentiment(text):
+    return model(text)[0]
+    # 政策舆情风险评估代码示例
+from llm_policy_analyzer import PolicyRiskModel
 
-# 情感分析
-results = sentiment_analyzer(text)
-for result in results:
-    print(f"情感标签：{result['label']}，置信度：{result['score']:.4f}")
+model = PolicyRiskModel("gov-policy-v2")
+risk_report = model.analyze(
+    policy_text="医保改革实施细则.docx",
+    social_data="weibo_202503/*.json" 
+)
+print(risk_report.risk_score)  # 输出：0.78（高风险）
 
-# 输出示例：
-# 情感标签：5 stars，置信度：0.8923 （注：模型将情感量化为1-5星，5星为最高正向）
+
